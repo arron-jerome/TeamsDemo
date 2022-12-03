@@ -5,6 +5,7 @@ import org.apache.dubbo.rpc.RpcContext;
 
 @DubboService
 public class AddressService implements IAddressService {
+    
     @Override
     public String findAddress(String name) {
         String hostName = Utils.getHostIp();

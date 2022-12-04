@@ -33,4 +33,11 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+
+    <build>
+        <finalName>teamsDemo</finalName>
+        <directory>../target</directory>
+    </build>
+
 </project>

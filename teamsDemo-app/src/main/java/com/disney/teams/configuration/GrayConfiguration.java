@@ -1,4 +1,4 @@
-package com.disney.teams.app.configuration;
+package com.disney.teams.configuration;
 
 import com.alibaba.csp.sentinel.adapter.dubbo.config.DubboAdapterGlobalConfig;
 import com.alibaba.csp.sentinel.adapter.dubbo.fallback.DubboFallback;
@@ -16,7 +16,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-import com.disney.teams.core.service.logs.TraceContextUtils;
+import com.disney.teams.service.logs.TraceContextUtils;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;

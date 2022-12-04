@@ -14,12 +14,12 @@ spring:
     nacos:
       discovery:
         enabled: true
-        server-addr: 10.111.54.44:8848
+        server-addr: 192.168.1.2:31848
         namespace: bd137bca-c91b-48c7-b6f5-51144333eea8
         username: nacos
       config:
         enabled: true
-        server-addr: 10.111.54.44:8848
+        server-addr: 192.168.1.2:31848
         namespace: bd137bca-c91b-48c7-b6f5-51144333eea8
         username: nacos
     sentinel:

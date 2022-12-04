@@ -1,4 +1,4 @@
-package com.disney.teams.app.controller;
+package com.disney.teams.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

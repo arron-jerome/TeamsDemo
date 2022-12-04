@@ -1,4 +1,4 @@
-package com.disney.teams.core.service.logs;
+package com.disney.teams.service.logs;
 
 import org.apache.http.util.Asserts;
 

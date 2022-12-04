@@ -1,4 +1,4 @@
-package com.disney.teams.core.service.utils;
+package com.disney.teams.service.utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

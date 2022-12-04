@@ -1,6 +1,6 @@
-package com.disney.teams.core.service.impl;
+package com.disney.teams.service.impl;
 
-import com.disney.teams.core.service.utils.Utils;
+import com.disney.teams.service.utils.Utils;
 import com.fsk.gray.common.dubbo.IUserService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;

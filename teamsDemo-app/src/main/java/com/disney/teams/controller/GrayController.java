@@ -1,14 +1,12 @@
-package com.disney.teams.app.controller;
+package com.disney.teams.controller;
 
-import com.disney.teams.core.service.IGrayService;
+import com.disney.teams.service.IGrayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/gray")

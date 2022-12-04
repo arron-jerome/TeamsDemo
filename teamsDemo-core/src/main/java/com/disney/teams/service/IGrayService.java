@@ -1,4 +1,4 @@
-package com.disney.teams.core.service;
+package com.disney.teams.service;
 
 public interface IGrayService {
     String echo();

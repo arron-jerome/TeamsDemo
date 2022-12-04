@@ -14,12 +14,12 @@ spring:
     nacos:
       discovery:
         enabled: true
-        server-addr: dev-nacos.fsk-internal.com:80
+        server-addr: 10.111.54.44:8848
         namespace: 90c2c745-53fb-43dd-898f-f6e311b2bfb7
         username: nacos
       config:
         enabled: true
-        server-addr: dev-nacos.fsk-internal.com:80
+        server-addr: 10.111.54.44:8848
         namespace: 90c2c745-53fb-43dd-898f-f6e311b2bfb7
         username: nacos
     sentinel:

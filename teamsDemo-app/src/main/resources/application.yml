@@ -32,7 +32,7 @@ dubbo:
   application:
     name: gray-server-dubbo
   registry:
-    address: nacos://dev-nacos.fsk-internal.com:80?namespace=90c2c745-53fb-43dd-898f-f6e311b2bfb7
+    address: nacos://192.168.1.2:31848?namespace=bd137bca-c91b-48c7-b6f5-51144333eea8
 
 feign:
   sentinel:

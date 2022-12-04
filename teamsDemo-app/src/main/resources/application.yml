@@ -15,12 +15,12 @@ spring:
       discovery:
         enabled: true
         server-addr: 10.111.54.44:8848
-        namespace: 90c2c745-53fb-43dd-898f-f6e311b2bfb7
+        namespace: bd137bca-c91b-48c7-b6f5-51144333eea8
         username: nacos
       config:
         enabled: true
         server-addr: 10.111.54.44:8848
-        namespace: 90c2c745-53fb-43dd-898f-f6e311b2bfb7
+        namespace: bd137bca-c91b-48c7-b6f5-51144333eea8
         username: nacos
     sentinel:
       transport:

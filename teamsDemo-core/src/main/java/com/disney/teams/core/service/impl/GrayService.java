@@ -3,8 +3,8 @@ package com.disney.teams.core.service.impl;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.disney.teams.core.service.IGrayService;
-import com.fsk.gray.common.logs.rid.TraceContextUtils;
-import com.fsk.gray.common.utils.Utils;
+import com.disney.teams.core.service.logs.TraceContextUtils;
+import com.disney.teams.core.service.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

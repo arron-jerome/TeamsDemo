@@ -18,11 +18,13 @@ public class GrayController {
 
     @GetMapping("/echo")
     public String echo() {
+        log.info("new request echo");
         return grayService.echo();
     }
 
     @GetMapping("/delay")
     public String delay() {
+        log.info("new request delay");
         return grayService.delay();
     }
 }

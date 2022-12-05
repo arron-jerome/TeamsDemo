@@ -14,6 +14,7 @@
 	<packaging>pom</packaging>
 	<description>teamsDemo project</description>
 	<modules>
+		<module>teamsDemo-itf</module>
 		<module>teamsDemo-model</module>
 		<module>teamsDemo-core</module>
 		<module>teamsDemo-dubbo-itf</module>

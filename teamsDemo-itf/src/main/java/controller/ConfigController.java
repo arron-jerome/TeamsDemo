@@ -1,4 +1,4 @@
-package com.disney.teams.controller;
+package controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;

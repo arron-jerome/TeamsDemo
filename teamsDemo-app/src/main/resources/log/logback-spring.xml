@@ -21,29 +21,11 @@
         <!--日志文件输出格式-->
         <encoder charset="UTF-8" class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
             <pattern>
-                {
-                <!--打印时间-->
-                "timestamp": "%date{yyyy-MM-dd HH:mm:ss.SSS}",
-                <!--日志级别-->
-"level": "%level",
-                <!--进程ID-->
-                "pid": "${PID:-}",
-                <!--线程名-->
-                "thread": "%thread",
-                <!--全限定类名-->
-                "class": "%logger",
-                <!--类中的哪个方法-->
-                "method": "%method",
-                <!--类中的第几行-->
-                "line": "%line",
-                <!--日志打印的信息-->
-                "message": "%message",
-                <!--堆栈异常信息-->
-                "statck_trace":"%xEx"
-                }
+                {"timestamp": "%date{yyyy-MM-dd HH:mm:ss.SSS}", "level": "%level", "message": "%message", "pid": "${PID:-}", "thread": "%thread", "class": "%logger", "method": "%method", "line": "%line", "statck_trace":"%xEx"}%n
             </pattern>
         </encoder>
     </appender>
+
     <!--输出到文件-->
     <appender name="DEBUG-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 正在记录的日志文件的路径及文件名 -->

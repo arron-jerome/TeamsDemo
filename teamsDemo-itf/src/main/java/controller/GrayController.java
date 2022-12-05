@@ -1,4 +1,4 @@
-package com.disney.teams.controller;
+package controller;
 
 import com.disney.teams.service.IGrayService;
 import lombok.extern.slf4j.Slf4j;

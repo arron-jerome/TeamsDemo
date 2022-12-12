@@ -1,6 +1,6 @@
 package com.disney.teams.service;
 
-public interface IGrayService {
+public interface ISentinelService {
     String echo();
 
     String delay();

@@ -1,5 +1,7 @@
 package com.disney.teams.model;
 
+import com.disney.teams.model.exception.StatusCode;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -90,12 +92,6 @@ public class Msg implements Serializable {
 	    this.msg = msg;
 	}
 
-	@Deprecated
-	public Msg(boolean ok, String msg, Map<String, ?> data) {
-	    this(ok, msg);
-	    this.data = data;
-	}
-
 	public Msg(boolean ok, String msg, Object data) {
 	    this(ok, msg);
 	    this.data = data;
@@ -126,31 +122,6 @@ public class Msg implements Serializable {
         this(code);
 		this.data = data;
     }
-
-
-	@Deprecated
-	public Msg(StatusCode code, String msg) {
-	    this(code);
-	    this.msg = msg;
-	}
-
-//	@Deprecated
-//	public Msg(String code, String msg, Map<String, ?> data) {
-//		this(code, msg);
-//		this.data = data;
-//	}
-//
-//	@Deprecated
-//	public Msg(StatusCode code, String msg, Map<String, ?> data) {
-//	    this(code, msg);
-//	    this.data = data;
-//	}
-
-	@Deprecated
-	public Msg(StatusCode code, String msg, Object data) {
-		this(code, msg);
-		this.data = data;
-	}
 
 	public String getCode() {
 		return code;

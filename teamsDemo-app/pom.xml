@@ -7,6 +7,7 @@
         <groupId>com.disney</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
+    <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>teamsDemo-app</artifactId>
     <version>1.0.0-SNAPSHOT</version>
@@ -27,5 +28,11 @@
     <build>
         <finalName>teamsDemo</finalName>
         <directory>../target</directory>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>

@@ -1,6 +1,6 @@
 package controller;
 
-import com.disney.teams.service.IGrayService;
+import com.disney.teams.service.ISentinelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 public class GrayController {
 
     @Resource
-    IGrayService grayService;
+    ISentinelService grayService;
 
     @GetMapping("/echo")
     public String echo() {

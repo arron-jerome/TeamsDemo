@@ -2,7 +2,7 @@ package com.disney.teams.service.impl;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.disney.teams.service.IGrayService;
+import com.disney.teams.service.ISentinelService;
 import com.disney.teams.service.logs.TraceContextUtils;
 import com.disney.teams.service.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class GrayService implements IGrayService {
+public class SentinelService implements ISentinelService {
 
     @Override
     @SentinelResource(value = "echo",fallback = "doFallback",blockHandler = "exceptionHandler")

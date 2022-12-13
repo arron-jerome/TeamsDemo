@@ -1,7 +1,7 @@
 package com.disney.teams.common.dao.dao;
 
 import com.disney.teams.common.dao.dao.api.IGenericDao;
-import com.disney.teams.model.entity.common.GenericEntity;
+import com.disney.teams.common.dao.entity.GenericEntity;
 
 import java.io.Serializable;
 

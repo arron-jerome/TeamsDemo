@@ -1,6 +1,10 @@
 package controller;
 
+import com.disney.teams.dubbo.itf.IAddressService;
+import com.disney.teams.model.Msg;
+import com.disney.teams.model.dto.UserDto;
 import com.disney.teams.service.ISentinelService;
+import com.disney.teams.service.dao.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +20,12 @@ public class GrayController {
     @Resource
     ISentinelService grayService;
 
+    @Resource
+    IAddressService addressService;
     @GetMapping("/echo")
-    public String echo() {
+    public UserDto echo() {
         log.info("new request echo");
-        return grayService.echo();
+        return addressService.findUser("111");
     }
 
     @GetMapping("/delay")

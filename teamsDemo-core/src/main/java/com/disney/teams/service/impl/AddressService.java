@@ -5,7 +5,7 @@ import com.disney.teams.common.utils.ClassUtils;
 import com.disney.teams.common.utils.CollectionUtils;
 import com.disney.teams.model.dto.UserDto;
 import com.disney.teams.model.entity.UserEntity;
-import com.disney.teams.common.exception.DemoException;
+import com.disney.teams.model.exception.DemoException;
 import com.disney.teams.common.exception.StatusCode;
 import com.disney.teams.service.dao.IUserService;
 import com.disney.teams.dubbo.itf.IAddressService;
@@ -29,10 +29,7 @@ public class AddressService implements IAddressService {
             throw new DemoException(StatusCode.CLIENT_EMPTY_PARAMETER);
         }
         log.info("find User id {}", userId);
-        GenericCriteria<UserEntity> gc = new GenericCriteria<>();
-        gc.eq(UserEntity.USER_NAME_COLUMN, userId);
-        gc.setOrderBy(UserEntity.UPDATE_TIME_PROPERTY + " DESC");
-        UserEntity userEntity = userService.findByCriteria(gc);
+        UserEntity userEntity = userService.findByPropertyAndValue(UserEntity.USER_NAME_COLUMN,userId);]
 //        UserEntity userEntity = new UserEntity();
 //        userEntity.setId(1L);
 //        userEntity.setUserName("Lily");

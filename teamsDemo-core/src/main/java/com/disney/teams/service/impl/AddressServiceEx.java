@@ -3,7 +3,7 @@ package com.disney.teams.service.impl;
 import com.disney.teams.common.utils.CollectionUtils;
 import com.disney.teams.model.criteria.GenericCriteria;
 import com.disney.teams.model.dto.UserDto;
-import com.disney.teams.common.exception.DemoException;
+import com.disney.teams.model.exception.DemoException;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import java.util.ArrayList;

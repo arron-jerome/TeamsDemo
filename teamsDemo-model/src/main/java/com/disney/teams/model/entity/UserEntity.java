@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = UserEntity.TABLE_NAME)
 public class UserEntity extends MysqlEntity {
-    public static final String TABLE_NAME = "brand";
+    public static final String TABLE_NAME = "user";
 
     @Column(name = USER_NAME_COLUMN, nullable = false)
     private String userName;

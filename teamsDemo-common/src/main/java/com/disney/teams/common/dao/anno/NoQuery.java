@@ -1,6 +1,7 @@
 package com.disney.teams.common.dao.anno;
 
-import com.disney.teams.model.criteria.GenericCriteria;
+
+import com.disney.teams.common.dao.criteria.GenericCriteria;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

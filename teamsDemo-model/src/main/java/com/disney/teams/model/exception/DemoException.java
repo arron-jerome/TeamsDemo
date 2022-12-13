@@ -1,5 +1,7 @@
-package com.disney.teams.common.exception;
+package com.disney.teams.model.exception;
 
+import com.disney.teams.common.exception.ServiceRuntimeException;
+import com.disney.teams.common.exception.StatusCode;
 import com.disney.teams.model.Msg;
 
 public class DemoException extends ServiceRuntimeException {

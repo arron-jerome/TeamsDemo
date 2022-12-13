@@ -31,3 +31,18 @@ build/
 
 ### VS Code ###
 .vscode/
+/logs/command-center.log.2022-12-05.0
+/logs/debug-2022-12-05.0.log
+/logs/debug-2022-12-10.0.log
+/logs/error-2022-12-05.0.log
+/logs/error-2022-12-10.0.log
+/logs/gray-server-metrics.log.2022-12-05
+/logs/gray-server-metrics.log.2022-12-05.idx
+/logs/info-2022-12-05.0.log
+/logs/info-2022-12-10.0.log
+/.mvn/wrapper/maven-wrapper.jar
+/.mvn/wrapper/maven-wrapper.properties
+/logs/sentinel-record.log.2022-12-05.0
+/logs/sentinel-record.log.2022-12-10.0
+/logs/warn-2022-12-05.0.log
+/logs/warn-2022-12-10.0.log

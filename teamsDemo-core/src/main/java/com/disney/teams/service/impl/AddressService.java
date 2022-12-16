@@ -3,10 +3,9 @@ package com.disney.teams.service.impl;
 import com.disney.teams.common.dao.criteria.GenericCriteria;
 import com.disney.teams.common.utils.ClassUtils;
 import com.disney.teams.common.utils.CollectionUtils;
-import com.disney.teams.model.dto.UserDto;
-import com.disney.teams.model.entity.UserEntity;
-import com.disney.teams.model.exception.DemoException;
-import com.disney.teams.common.exception.StatusCode;
+import com.disney.teamsDemo.model.dto.UserDto;
+import com.disney.teamsDemo.model.entity.UserEntity;
+import com.disney.teams.common.exception.BaseStatusCode;
 import com.disney.teams.service.dao.IUserService;
 import com.disney.teams.dubbo.itf.IAddressService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ public class AddressService implements IAddressService {
     @Override
     public UserDto findUser(String userId) throws DemoException {
         if (StringUtils.isBlank(userId)) {
-            throw new DemoException(StatusCode.CLIENT_EMPTY_PARAMETER);
+            throw new DemoException(BaseStatusCode.CLIENT_EMPTY_PARAMETER);
         }
         log.info("find User id {}", userId);
         UserEntity userEntity = userService.findByPropertyAndValue(UserEntity.USER_NAME_COLUMN,userId);]

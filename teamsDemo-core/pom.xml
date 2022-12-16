@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>com.disney</groupId>
-            <artifactId>teamsDemo-common</artifactId>
+            <artifactId>teams-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -19,7 +19,7 @@
 		<module>teamsDemo-core</module>
 		<module>teamsDemo-dubbo-itf</module>
 		<module>teamsDemo-app</module>
-		<module>teamsDemo-common</module>
+		<module>teams-common</module>
 	</modules>
 
 	<properties>

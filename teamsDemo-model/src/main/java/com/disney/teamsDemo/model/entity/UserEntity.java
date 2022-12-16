@@ -1,6 +1,7 @@
 package com.disney.teamsDemo.model.entity;
 
 
+
 import com.disney.teams.common.dao.entity.MysqlEntity;
 
 import javax.persistence.Column;

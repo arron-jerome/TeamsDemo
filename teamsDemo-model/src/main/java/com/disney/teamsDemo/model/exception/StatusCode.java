@@ -7,10 +7,13 @@ public class StatusCode extends BaseStatusCode {
 
     private static final long serialVersionUID = 35898123493536297L;
 
-    protected String BaseCode = "1000";
-
     public static final StatusCode CHANGE_PROFILE_FAILED = new StatusCode("B100"
             , "change profile failed");
+
+    @Override
+    public String getBaseCode() {
+        return "1000";
+    }
 
     public StatusCode() {
         super();

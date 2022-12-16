@@ -1,6 +1,7 @@
 package com.disney.teams.dubbo.itf;
 
 import com.disney.teamsDemo.model.dto.UserDto;
+import com.disney.teamsDemo.model.exception.DemoException;
 
 import java.util.List;
 

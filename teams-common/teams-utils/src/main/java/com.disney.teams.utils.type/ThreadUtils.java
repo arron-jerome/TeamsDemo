@@ -1,19 +1,22 @@
-package com.disney.teams.model.pagination;
+package com.disney.teams.utils.type;
 
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author arron.zhou
  * @version 1.0.0
  * @date 2022/12/16
+ * Description:
  * Modification  History:
  * Date         Author        Version        Description
  * ------------------------------------------------------
  * 2022/12/16       arron.zhou      1.0.0          create
  */
-public interface PagedList<T> extends Pagination, Cloneable, Serializable{
-    
-    List<T> getContent();
-    
+public class ThreadUtils {
+    public static void sleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+//            e.printStackTrace();
+        }
+    }
 }

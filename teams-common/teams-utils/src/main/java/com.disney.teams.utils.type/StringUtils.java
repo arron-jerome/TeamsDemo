@@ -1257,13 +1257,6 @@ public abstract class StringUtils {
         }
     }
 
-    /**
-     * @author lucky.liu
-     *
-     * @param text
-     * @param deleteTexts
-     * @return
-     */
     public static String deleteAll(String text, String... deleteTexts) {
         if(text == null || ArrayUtils.isEmpty(deleteTexts)) {
             return text;
@@ -1281,13 +1274,6 @@ public abstract class StringUtils {
         return newText;
     }
 
-    /**
-     * @author lucky.liu
-     *
-     * @param text
-     * @param deleteRegexs
-     * @return
-     */
     public static String deleteAllByRegex(String text, String... deleteRegexs) {
         if(text == null || ArrayUtils.isEmpty(deleteRegexs)) {
             return text;

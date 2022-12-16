@@ -1,6 +1,3 @@
-/*
- * Copyright 2016-2020 1HAITAO.COM. All rights reserved.
- */
 package com.disney.teams.utils.type;
 
 import com.disney.teams.utils.AssertUtils;

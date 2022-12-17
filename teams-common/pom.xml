@@ -16,6 +16,9 @@
         <module>teams-tps</module>
         <module>teams-model</module>
         <module>teams-utils</module>
+        <module>teams-cache</module>
+        <module>teams-mq</module>
+        <module>teams-locker</module>
     </modules>
 
     <properties>

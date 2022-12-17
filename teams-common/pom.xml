@@ -18,6 +18,46 @@
         <module>teams-utils</module>
     </modules>
 
+    <properties>
+        <module.version>1.0.0-SNAPSHOT</module.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>com.disney</groupId>
+                <artifactId>teams-exception</artifactId>
+                <version>${module.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.disney</groupId>
+                <artifactId>teams-model</artifactId>
+                <version>${module.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.disney</groupId>
+                <artifactId>teams-dao</artifactId>
+                <version>${module.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.disney</groupId>
+                <artifactId>teams-utils</artifactId>
+                <version>${module.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>

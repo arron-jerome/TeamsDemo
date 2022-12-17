@@ -10,7 +10,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "PageList")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class PageList<T> implements PagedList<T> {
+public class PageList<T> implements IPageList<T> {
 
     private static final long serialVersionUID = -4168124165860775460L;
     
@@ -152,11 +152,11 @@ public class PageList<T> implements PagedList<T> {
         this.pager = pager;
     }
 
-    public static <Q> boolean isEmpty(PagedList<Q> pagedList){
+    public static <Q> boolean isEmpty(IPageList<Q> pagedList){
         return pagedList == null ? true : pagedList.getTotalRecordCount() < 1;
     }
 
-    public static <Q> boolean isNotEmpty(PagedList<Q> pagedList){
+    public static <Q> boolean isNotEmpty(IPageList<Q> pagedList){
         return !isEmpty(pagedList);
     }
 }

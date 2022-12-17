@@ -12,7 +12,7 @@ import java.util.List;
  * ------------------------------------------------------
  * 2022/12/16       arron.zhou      1.0.0          create
  */
-public interface PagedList<T> extends Pagination, Cloneable, Serializable{
+public interface IPageList<T> extends Pagination, Cloneable, Serializable{
     
     List<T> getContent();
     

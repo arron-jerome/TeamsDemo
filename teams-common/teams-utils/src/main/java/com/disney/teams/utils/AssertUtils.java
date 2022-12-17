@@ -1,7 +1,6 @@
 package com.disney.teams.utils;
 
 import com.disney.teams.exception.BasicRuntimeException;
-import com.disney.teams.model.vo.BaseStatusCode;
 import com.disney.teams.utils.type.ArrayUtils;
 import com.disney.teams.utils.type.CollectionUtils;
 import com.disney.teams.utils.type.MapUtils;

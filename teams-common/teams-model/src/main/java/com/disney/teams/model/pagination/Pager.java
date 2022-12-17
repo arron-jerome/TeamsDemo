@@ -11,7 +11,6 @@ public class Pager implements Pagination {
      * 默认页大小
      */
     public static final int DEFAULT_PAGE_SIZE = 10;
-
     private int pageNo; // 当前页面
     private int pageSize = DEFAULT_PAGE_SIZE; // 每页的记录数，此处北温带了一个初始值，每页显示3条
     private long totalRecordCount; // 总的记录数

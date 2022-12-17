@@ -2,7 +2,7 @@ package com.disney.teams.utils.type;
 
 import com.disney.teams.model.anno.Modify;
 import com.disney.teams.model.pagination.PageList;
-import com.disney.teams.model.pagination.PagedList;
+import com.disney.teams.model.pagination.IPageList;
 import com.disney.teams.utils.io.CloseUtils;
 
 import java.io.*;
@@ -70,14 +70,14 @@ public abstract class ClassUtils {
     }
 
     static {
-        addParser(PagedList.class, new ClassParser<PagedList>() {
+        addParser(IPageList.class, new ClassParser<IPageList>() {
             @Override
-            public <T> PagedList parse(T src, Class<PagedList> clazz) {
+            public <T> IPageList parse(T src, Class<IPageList> clazz) {
                 return parse(src, clazz, null);
             }
 
             @Override
-            public <T> PagedList parse(T src, Class<PagedList> clazz, Type[] qtypes) {
+            public <T> IPageList parse(T src, Class<IPageList> clazz, Type[] qtypes) {
                 return ClassUtils.convert(src, PageList.class, qtypes);
             }
         });

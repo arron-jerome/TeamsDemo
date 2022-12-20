@@ -5,8 +5,8 @@ import com.disney.teams.utils.ScriptUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author arron.zhou
@@ -27,7 +27,7 @@ public class StringUtilsTest {
         String[] subText = {"a", "b", "aa", "bcb", "cd", "aa,bcb,cd", "bcb,cd", "abdgd"};
         boolean[] expect = {false, false, true, true, true, true, true, false};
         int i = 0;
-        for(String sub : subText) {
+        for (String sub : subText) {
             Assert.assertEquals(expect[i++], StringUtils.containsBySplitChar(text, sub, ','));
         }
     }
@@ -39,12 +39,12 @@ public class StringUtilsTest {
         map.put("v", "b");
 
         String[] texts = {
-            "${key}-${v}"
+                "${key}-${v}"
         };
         String[] values = {
-            "aabaab-b"
+                "aabaab-b"
         };
-        for(int i = 0; i < values.length; ++i) {
+        for (int i = 0; i < values.length; ++i) {
             String v = ScriptUtils.replaceText(texts[i], map);
             Assert.assertEquals(values[i], v);
         }
@@ -66,27 +66,25 @@ public class StringUtilsTest {
             String real = StringUtils.byteSubstring(tests[i], 0, testIndex[i]);
             Assert.assertEquals(expects[i], real);
         }
-
-
-
     }
 
     @Test
     public void compareNumber() throws Exception {
         String[][] tests = {
-            {"0" , "0", "0"},
-            {"0" , "1", "-1"},
-            {"1" , "0", "1"},
-            {"11.11" , "111.1", "-1"},
-            {"111.11" , "111.1", "1"},
-            {"111.11" , "111.111", "-1"},
-            {"111.11" , "111.11", "0"},
-            {"111" , "123", "-1"},
-            {"111" , "111", "0"},
-            {"0111" , "111", "0"}
+                {"0", "0", "0"},
+                {"0", "1", "-1"},
+                {"1", "0", "1"},
+                {"11.11", "111.1", "-1"},
+                {"111.11", "111.1", "1"},
+                {"111.11", "111.111", "-1"},
+                {"111.11", "111.11", "0"},
+                {"111", "123", "-1"},
+                {"111", "111", "0"},
+                {"0111", "111", "0"}
         };
         for (String[] test : tests) {
             Assert.assertEquals(JSON.toJSONString(test), test[2], Integer.toString(StringUtils.compareNumber(test[0], test[1])));
         }
+
     }
 }

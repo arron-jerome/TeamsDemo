@@ -8,6 +8,5 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>teamDemos-acp</artifactId>
-    <name>Archetype - teamDemos-acp</name>
-    <url>http://maven.apache.org</url>
+    <name>teamDemos-acp</name>
 </project>

@@ -1,11 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.disney</groupId>
-        <artifactId>teamsDemo-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
+
+    <groupId>com.disney</groupId>
+    <version>1.0.0-SNAPSHOT</version>
     <artifactId>teams-common</artifactId>
     <name>teams-common</name>
     <packaging>pom</packaging>
@@ -24,11 +22,12 @@
     <properties>
         <module.version>1.0.0-SNAPSHOT</module.version>
         <junit.version>4.12</junit.version>
+        <jedis.version>4.3.1</jedis.version>
+        <slf4j.version>1.7.33</slf4j.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>com.disney</groupId>
                 <artifactId>teams-exception</artifactId>
@@ -54,12 +53,39 @@
                 <scope>compile</scope>
             </dependency>
             <dependency>
+                <groupId>com.disney</groupId>
+                <artifactId>teams-cache</artifactId>
+                <version>${module.version}</version>
+            </dependency>
+
+
+            <!--cache-->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+
+
+            <!--log-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
+
+
         </dependencies>
+
+
     </dependencyManagement>
     <dependencies>
         <dependency>

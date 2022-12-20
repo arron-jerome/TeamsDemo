@@ -29,6 +29,9 @@ public abstract class AbstractRedisCacheFactory extends AbstractCacheFactory {
     protected long maxWaitMillis;
     protected boolean testOnBorrow;
     protected boolean testOnReturn;
+    private int connectionTimeout;
+    private int soTimeout;
+    private String password;
 
     protected boolean defaultRedis = true;
 
@@ -108,6 +111,30 @@ public abstract class AbstractRedisCacheFactory extends AbstractCacheFactory {
 
     public void setTestOnReturn(boolean testOnReturn) {
         this.testOnReturn = testOnReturn;
+    }
+
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    public int getSoTimeout() {
+        return soTimeout;
+    }
+
+    public void setSoTimeout(int soTimeout) {
+        this.soTimeout = soTimeout;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean isDefaultRedis() {

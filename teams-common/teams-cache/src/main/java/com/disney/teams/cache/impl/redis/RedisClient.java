@@ -1,23 +1,8 @@
-/*
- * Copyright 2016-2020 1HAITAO.COM. All rights reserved.
- */
 package com.disney.teams.cache.impl.redis;
 
-import redis.clients.jedis.BinaryClient;
-import redis.clients.jedis.BitPosParams;
-import redis.clients.jedis.GeoCoordinate;
-import redis.clients.jedis.GeoRadiusResponse;
-import redis.clients.jedis.GeoUnit;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCommands;
+
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
-import redis.clients.jedis.SortingParams;
-import redis.clients.jedis.Tuple;
-import redis.clients.jedis.params.geo.GeoRadiusParam;
-import redis.clients.jedis.params.sortedset.ZAddParams;
-import redis.clients.jedis.params.sortedset.ZIncrByParams;
+import redis.clients.jedis.commands.JedisCommands;
 
 import java.util.List;
 import java.util.Map;

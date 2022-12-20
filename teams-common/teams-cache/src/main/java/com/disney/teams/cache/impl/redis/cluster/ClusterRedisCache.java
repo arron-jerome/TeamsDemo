@@ -1,38 +1,33 @@
-/*
- * Copyright 2016-2020 1HAITAO.COM. All rights reserved.
- */
-package com.disney.teams.cache.impl.redis;
+package com.disney.teams.cache.impl.redis.cluster;
 
-import com.yhtframework.cache.CacheRuntimeException;
+import com.disney.teams.cache.CacheRuntimeException;
 import com.disney.teams.cache.impl.AbstractCache;
-import com.yhtframework.cache.impl.redis.utils.RedisCacheUtils;
-import com.yhtframework.cache.impl.redis.utils.RedisRunnable;
-import com.yhtframework.model.vo.StatusCode;
-import com.yhtframework.utils.type.ArrayUtils;
-import com.yhtframework.utils.type.CollectionUtils;
+import com.disney.teams.cache.impl.redis.utils.RedisCacheUtils;
+import com.disney.teams.cache.impl.redis.utils.RedisRunnable;
+import com.disney.teams.utils.type.ArrayUtils;
+import com.disney.teams.utils.type.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.params.SetParams;
 
 import java.util.List;
 
 /**
- * //TODO
- *
- * @author lucky.liu
+ * @author arron.zhou
  * @version 1.0.0
- * @email liuwb2010@gmail.com
- * @date 2016-03-09
+ * @date 2022/12/20
+ * Description:
  * Modification  History:
  * Date         Author        Version        Description
  * ------------------------------------------------------
- * 2016-03-09   lucky.liu     1.0.0          create
+ * 2022/12/20       arron.zhou      1.0.0          create
  */
 public class ClusterRedisCache extends AbstractCache {
 
-    public static final Long SUCC_CODE = 1L;
-    public static final String SUCC_CODE_STR = "OK";
+    public static final Long SUC_CODE = 1L;
+    public static final String SUC_CODE_STR = "OK";
 
     private JedisCluster jedisCluster;
 
@@ -69,13 +64,14 @@ public class ClusterRedisCache extends AbstractCache {
     @Override
     public <T> boolean add(String key, T value, int expiredSeconds) {
         if (isValidExpiredTime(expiredSeconds)) {
-            String rs = jedisCluster.set(buildKey(key), valueSerializer.serialize(value), "NX", "EX", expiredSeconds);
-            return SUCC_CODE_STR.equals(rs);
+            SetParams setParams = SetParams.setParams().nx().ex(expiredSeconds);
+            String rs = jedisCluster.set(buildKey(key), valueSerializer.serialize(value), setParams);
+            return SUC_CODE_STR.equals(rs);
         } else if (expiredSeconds == 0) {
             return !jedisCluster.exists(buildKey(key));
         } else {
             Long rs = jedisCluster.setnx(buildKey(key), valueSerializer.serialize(value));
-            return SUCC_CODE.equals(rs);
+            return SUC_CODE.equals(rs);
         }
     }
 
@@ -88,7 +84,6 @@ public class ClusterRedisCache extends AbstractCache {
                     final String fullKey = buildKey(key);
                     final int retryCount = RedisCacheUtils.TRANSACTION_MAX_RETRY_COUNT + 1;
                     //发现数据已经被修改，重试最多TRANSACTION_MAX_RETRY_COUNT次，直到成功为止
-
                     String valueStr = valueSerializer.serialize(value);
                     for (int i = 1; i < retryCount; ++i) {
                         jedis.watch(fullKey);
@@ -96,17 +91,14 @@ public class ClusterRedisCache extends AbstractCache {
                             //事务开始
                             Transaction tx = jedis.multi();
                             Response<String> setRes = tx.set(fullKey, valueStr);
-
                             Response<Long> expireRes = tx.expire(fullKey, expiredSeconds);
-
                             //执行队列中的任务并提交
                             //TODO 如果失败，仍可能有数据被提交，待优化
                             List<Object> list = tx.exec();
                             if (CollectionUtils.isEmpty(list)) {
                                 continue;
                             }
-
-                            if (SUCC_CODE_STR.equals(setRes.get()) && SUCC_CODE.equals(expireRes.get())) {
+                            if (SUC_CODE_STR.equals(setRes.get()) && SUC_CODE.equals(expireRes.get())) {
                                 return Boolean.TRUE;
                             } else {
                                 jedis.unwatch();
@@ -117,21 +109,21 @@ public class ClusterRedisCache extends AbstractCache {
                             throw e;
                         }
                     }
-                    throw new CacheRuntimeException(StatusCode.SERVER_ERROR_CODE, String.format("Execute key '%s' transaction, rollback %s count!", fullKey, retryCount));
+                    throw new CacheRuntimeException(String.format("Execute key '%s' transaction, rollback %s count!", fullKey, retryCount));
                 }
             });
         } else if (expiredSeconds == 0) {
             return !jedisCluster.exists(buildKey(key));
         } else {
             String rs = jedisCluster.set(buildKey(key), valueSerializer.serialize(value));
-            return SUCC_CODE_STR.equals(rs);
+            return SUC_CODE_STR.equals(rs);
         }
     }
 
     @Override
     public boolean delete(String key) {
         Long ok = jedisCluster.del(buildKey(key));
-        return SUCC_CODE.equals(ok);
+        return SUC_CODE.equals(ok);
     }
 
     @Override
@@ -139,12 +131,12 @@ public class ClusterRedisCache extends AbstractCache {
         if (ArrayUtils.isEmpty(keys)) {
             return 0;
         }
-        String[] nkeys = new String[keys.length];
+        String[] nKeys = new String[keys.length];
         for (int i = 0, len = keys.length; i < len; ++i) {
-            nkeys[i] = buildKey(keys[i]);
+            nKeys[i] = buildKey(keys[i]);
         }
-        Long count = jedisCluster.del(nkeys);
-        return count == null ? 0 : count.intValue();
+        Long count = jedisCluster.del(nKeys);
+        return count.intValue();
     }
 
     @Override
@@ -170,7 +162,7 @@ public class ClusterRedisCache extends AbstractCache {
             String buildKey = buildKey(key);
             for (int i = 0; i < 3; ++i) {
                 Long result = jedisCluster.expire(buildKey, expiredSeconds);
-                if (SUCC_CODE.equals(result)) {
+                if (SUC_CODE.equals(result)) {
                     return;
                 } else {
                     logger.warn("Set expire by key {} return error code {}", buildKey, result);
@@ -182,12 +174,12 @@ public class ClusterRedisCache extends AbstractCache {
 
     @Override
     public int ttl(String key) {
-        Long ttl = jedisCluster.ttl(buildKey(key));
-        if (ttl == null || ttl == -2) {
+        long ttl = jedisCluster.ttl(buildKey(key));
+        if (ttl == -2) {
             return CACHE_NOT_EXISTS;
         } else if (ttl == -1) {
             return CACHE_NO_EXPIRE;
         }
-        return ttl.intValue();
+        return (int) ttl;
     }
 }

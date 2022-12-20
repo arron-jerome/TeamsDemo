@@ -60,18 +60,12 @@ public interface ICache {
      * 从缓存中取值<br />
      * 当存入的数据类型为java.math.BigInteger, BigDecimal, AtomicInteger等Numberic数值类型时，
      * 请使用{@link #get(String, Class)}
-     * @param key
-     * @return
      */
     <T extends Object> T get(String key);
     <T extends Object> T get(String key, Class<T> clz);
 
     /**
      * 如果缓存数据的剩余时间小于ttl，则不返回数据
-     * @param key
-     * @param ttl
-     * @param <T>
-     * @return
      */
     <T extends Object> T getIfOverTtl(String key, Integer ttl);
     <T extends Object> T getIfOverTtl(String key, Integer ttl, Class<T> clz);
@@ -80,48 +74,38 @@ public interface ICache {
      * 从缓存中取值<br />
      * 当存入的数据类型为java.math.BigInteger, BigDecimal, AtomicInteger等 Numeric数值类型时，
      * 请使用{@link #get(String, int, Class)}
-     * @param key
-     * @param timeoutSeconds
-     * @return
      */
     <T extends Object> T get(String key, int timeoutSeconds);
     <T extends Object> T get(String key, int timeoutSeconds, Class<T> clz);
 
     /**
-     * 往缓存里加数据，已经存在则返回false
-     * @param key
-     * @param value
-     * @return
+     * 往缓存里加数据，已经存在则返回false use defaultExpiredTime=OneDay
+     * @param key key
+     * @param value value
      */
     <T extends Object> boolean add(String key, T value);
+
+    /**
+     * add data failed if already exist
+     * @param key key
+     * @param value value
+     * @param expiredSeconds >0 expired times <0 forever  0:exist
+     */
     <T extends Object> boolean add(String key, T value, int expiredSeconds);
 
     /**
      * 如果缓存数据的剩余时间小于ttl，则add为true
-     * @param key
-     * @param ttl
-     * @param <T>
-     * @return
      */
     <T extends Object> boolean addIfOverTtl(String key, T value, Integer ttl);
     <T extends Object> boolean addIfOverTtl(String key, T value, Integer ttl, int expiredSeconds);
 
     /**
      * 新增缓存item
-     *
-     * @param key
-     * @param value
-     * @return
      */
     <T extends Object> boolean put(String key, T value);
 
     /**
      * 新增缓存item
-     *
-     * @param key
-     * @param value
-     * @param expiredSeconds
-     * @return
      */
     <T extends Object> boolean put(String key, T value, int expiredSeconds);
 

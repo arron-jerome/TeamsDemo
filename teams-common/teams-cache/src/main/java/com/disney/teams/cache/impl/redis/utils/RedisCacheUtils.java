@@ -1,12 +1,14 @@
 package com.disney.teams.cache.impl.redis.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.disney.teams.cache.CacheRuntimeException;
 import com.disney.teams.cache.ICache;
 import com.disney.teams.cache.impl.AbstractCache;
-import com.disney.teams.cache.impl.redis.ClusterRedisCache;
+import com.disney.teams.cache.impl.redis.cluster.ClusterRedisCache;
 import com.disney.teams.cache.impl.redis.RedisCache;
-import com.disney.teams.cache.impl.redis.RedisClient;
 import com.disney.teams.cache.serializer.ValueSerializer;
+import com.disney.teams.log.timer.AutoTimeLog;
+import com.disney.teams.utils.type.CollectionUtils;
 import com.disney.teams.utils.type.FieldUtils;
 import com.disney.teams.utils.type.MapUtils;
 import org.slf4j.Logger;
@@ -74,7 +76,6 @@ public class RedisCacheUtils {
         } else if (cache instanceof RedisCache) {
             jedis = ((RedisCache) cache).getJedis();
         }
-
     }
 
     public static <T> T hget(String key, String field) {
@@ -241,7 +242,7 @@ public class RedisCacheUtils {
                         throw e;
                     }
                 }
-                throw new CacheRuntimeException(StatusCode.SERVER_ERROR_CODE, String.format("Execute key '%s' transaction, rollback %s count!", fullKey, retryCount));
+                throw new CacheRuntimeException(String.format("Execute key '%s' transaction, rollback %s count!", fullKey, retryCount));
             });
         }
     }

@@ -1,11 +1,14 @@
-/*
- * Copyright 2016-2020 1HAITAO.COM. All rights reserved.
- */
 package com.disney.teams.cache.serializer;
 
 /**
- * Created by htoo on 10/9/15.
- * 对象序列化接口,对象序列化为字符流
+ * @author arron.zhou
+ * @version 1.0.0
+ * @date 2022/12/20
+ * Description:
+ * Modification  History:
+ * Date         Author        Version        Description
+ * ------------------------------------------------------
+ * 2022/12/20       arron.zhou      1.0.0          create
  */
 public abstract class AbstractStringSerializer implements ValueSerializer<String> {
 

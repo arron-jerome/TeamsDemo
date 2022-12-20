@@ -1,14 +1,15 @@
-package com.disney.teams.cache.impl.redis;
+package com.disney.teams.cache.impl.redis.cluster;
 
 import com.disney.teams.cache.ICache;
+import com.disney.teams.cache.impl.redis.AbstractRedisCacheFactory;
 import com.disney.teams.cache.impl.redis.utils.RedisCacheUtils;
 import com.disney.teams.cache.serializer.FastJsonSerializer;
 import com.disney.teams.utils.type.StringUtils;
 import redis.clients.jedis.ConnectionPoolConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPoolConfig;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -23,12 +24,25 @@ import java.util.Set;
  */
 public class RedisClusterCacheFactory extends AbstractRedisCacheFactory {
 
-    private int connectionTimeout;
-    private int soTimeout;
     private int maxRedirections;
-    private String password;
 
     private ClusterRedisCache cache;
+
+    /**
+     * 构建集群HostAndPort配置
+     */
+    private Set<HostAndPort> buildHostAndPorts(String hosts) {
+        Set<HostAndPort> jedisShardInfoList = new HashSet<HostAndPort>();
+        String[] hostArrays = hosts.split(",");
+        for (String hostStr : hostArrays) {
+            String[] ipAndPort = hostStr.split(":");
+            String ip = ipAndPort[0];
+            int port = Integer.parseInt(ipAndPort[1]);
+            HostAndPort jedisShardInfo = new HostAndPort(ip, port);
+            jedisShardInfoList.add(jedisShardInfo);
+        }
+        return jedisShardInfoList;
+    }
 
     @Override
     public ICache getObject() throws Exception {
@@ -39,15 +53,15 @@ public class RedisClusterCacheFactory extends AbstractRedisCacheFactory {
             if (cache != null) {
                 return cache;
             }
-            Set<HostAndPort> hostAndPort = JedisShardInfoFactory.buildHostAndPorts(servers);
+            Set<HostAndPort> hostAndPort = buildHostAndPorts(servers);
             ConnectionPoolConfig config = buildConnectConfig();
             JedisCluster jedisCluster;
-            if (StringUtils.isBlank(password)) {
-                jedisCluster = new JedisCluster(hostAndPort, connectionTimeout,
-                        soTimeout, maxRedirections, config);
+            if (StringUtils.isBlank(getPassword())) {
+                jedisCluster = new JedisCluster(hostAndPort, getConnectionTimeout(),
+                        getSoTimeout(), maxRedirections, config);
             } else {
-                jedisCluster = new JedisCluster(hostAndPort, connectionTimeout,
-                        soTimeout, maxRedirections, password, config);
+                jedisCluster = new JedisCluster(hostAndPort, getConnectionTimeout(),
+                        getSoTimeout(), maxRedirections, getPassword(), config);
             }
             cache = new ClusterRedisCache();
             cache.setValueSerializer(new FastJsonSerializer());
@@ -60,35 +74,11 @@ public class RedisClusterCacheFactory extends AbstractRedisCacheFactory {
         }
     }
 
-    public int getConnectionTimeout() {
-        return connectionTimeout;
-    }
-
-    public void setConnectionTimeout(int connectionTimeout) {
-        this.connectionTimeout = connectionTimeout;
-    }
-
-    public int getSoTimeout() {
-        return soTimeout;
-    }
-
-    public void setSoTimeout(int soTimeout) {
-        this.soTimeout = soTimeout;
-    }
-
     public int getMaxRedirections() {
         return maxRedirections;
     }
 
     public void setMaxRedirections(int maxRedirections) {
         this.maxRedirections = maxRedirections;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

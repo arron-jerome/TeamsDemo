@@ -2,7 +2,6 @@ package com.disney.teams.cache;
 
 
 import com.disney.teams.exception.BasicRuntimeException;
-import com.disney.teams.model.vo.BaseStatusCode;
 
 /**
  * @author arron.zhou
@@ -18,7 +17,7 @@ public class CacheRuntimeException extends BasicRuntimeException {
 
     private static final long serialVersionUID = -4104858855674878071L;
 
-    public CacheRuntimeException() {
+    public CacheRuntimeException(String format) {
     }
 
     public CacheRuntimeException(String message, Throwable cause) {

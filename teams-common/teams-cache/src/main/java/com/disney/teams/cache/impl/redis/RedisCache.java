@@ -1,9 +1,15 @@
 package com.disney.teams.cache.impl.redis;
 
+import com.disney.teams.cache.CacheRuntimeException;
 import com.disney.teams.cache.impl.AbstractCache;
+import com.disney.teams.cache.impl.redis.utils.RedisCacheUtils;
+import com.disney.teams.cache.impl.redis.utils.RedisRunnable;
+import com.disney.teams.utils.type.CollectionUtils;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.params.SetParams;
 
 import java.util.List;
 
@@ -19,57 +25,67 @@ import java.util.List;
  */
 public class RedisCache extends AbstractCache {
 
-    public static final Long SUCC_CODE = 1L;
-    public static final String SUCC_CODE_STR = "OK";
+    public static final Long SUC_CODE = 1L;
+    public static final String SUC_CODE_STR = "OK";
 
-    private RedisClient jedis;
+    private JedisPool jedisPool;
 
-    RedisCache() {}
-
-    void setJedis(RedisClient jedis) {
-        this.jedis = jedis;
+    RedisCache() {
     }
 
-    public RedisClient getJedis() {
-        return jedis;
+    public RedisCache(JedisPool jedisPool) {
+        this.jedisPool = jedisPool;
+    }
+
+    public JedisPool getJedisPool() {
+        return jedisPool;
     }
 
     @Override
     public boolean exists(String key) {
-        return jedis.exists(buildKey(key));
+        try (Jedis ignored = jedisPool.getResource()) {
+            return ignored.exists(buildKey(key));
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T get(String key, int timeoutSeconds) {
-        String s = jedis.get(buildKey(key));
-        T value = valueSerializer.unSerialize(s);
-        return value;
+        try (Jedis ignored = jedisPool.getResource()) {
+            String s = ignored.get(buildKey(key));
+            return valueSerializer.unSerialize(s);
+        }
     }
 
     @Override
     public <T> T get(String key, int timeoutSeconds, Class<T> clz) {
-        String s = jedis.get(buildKey(key));
-        T value = valueSerializer.unSerialize(s, clz);
-        return value;
+        try (Jedis ignored = jedisPool.getResource()) {
+            String s = ignored.get(buildKey(key));
+            return valueSerializer.unSerialize(s, clz);
+        }
     }
 
     @Override
     public <T> boolean add(String key, T value, int expiredSeconds) {
-        if(isValidExpiredTime(expiredSeconds)) {
-            String rs = jedis.set(buildKey(key), valueSerializer.serialize(value), "NX", "EX", expiredSeconds);
-            return SUCC_CODE_STR.equals(rs);
-        } else if(expiredSeconds == 0){
-            return !jedis.exists(buildKey(key));
-        } else {
-            Long rs = jedis.setnx(buildKey(key), valueSerializer.serialize(value));
-            return SUCC_CODE.equals(rs);
+        try (Jedis ignored = jedisPool.getResource()) {
+            if (isValidExpiredTime(expiredSeconds)) {
+                SetParams setParams = SetParams.setParams().ex(expiredSeconds)
+                        .nx();
+                String rs = ignored.set(buildKey(key)
+                        , valueSerializer.serialize(value), setParams);
+                return SUC_CODE_STR.equals(rs);
+            } else if (expiredSeconds == 0) {
+                return !ignored.exists(buildKey(key));
+            } else {
+                Long rs = ignored.setnx(buildKey(key), valueSerializer.serialize(value));
+                return SUC_CODE.equals(rs);
+            }
         }
     }
 
     @Override
     public <T> boolean put(final String key, final T value, final int expiredSeconds) {
-        if(isValidExpiredTime(expiredSeconds)) {
+        if (isValidExpiredTime(expiredSeconds)) {
             return RedisCacheUtils.execute(key, new RedisRunnable<Boolean>() {
                 @Override
                 public Boolean execute(Jedis jedis) {
@@ -94,7 +110,7 @@ public class RedisCache extends AbstractCache {
                                 continue;
                             }
 
-                            if(SUCC_CODE_STR.equals(setRes.get()) && SUCC_CODE.equals(expireRes.get())) {
+                            if (SUC_CODE_STR.equals(setRes.get()) && SUC_CODE.equals(expireRes.get())) {
                                 return Boolean.TRUE;
                             } else {
                                 jedis.unwatch();
@@ -105,46 +121,54 @@ public class RedisCache extends AbstractCache {
                             throw e;
                         }
                     }
-                    throw new CacheRuntimeException(StatusCode.SERVER_ERROR_CODE, String.format("Execute key '%s' transaction, rollback %s count!", fullKey, retryCount));
+                    throw new CacheRuntimeException(String.format("Execute key '%s' transaction, rollback %s count!", fullKey, retryCount));
                 }
             });
-        } else if(expiredSeconds == 0) {
+        } else if (expiredSeconds == 0) {
             return !jedis.exists(buildKey(key));
         } else {
             String rs = jedis.set(buildKey(key), valueSerializer.serialize(value));
-            return SUCC_CODE_STR.equals(rs);
+            return SUC_CODE_STR.equals(rs);
         }
     }
 
     @Override
     public boolean delete(String key) {
-        Long ok = jedis.del(buildKey(key));
-        return SUCC_CODE.equals(ok);
+        try (Jedis ignored = jedisPool.getResource()) {
+            Long ok = ignored.del(buildKey(key));
+            return SUC_CODE.equals(ok);
+        }
     }
 
     @Override
     public long incr(final String key, final long value) {
-        long result = jedis.incrBy(buildKey(key), value);
-        return result;
+        try (Jedis ignored = jedisPool.getResource()) {
+            return ignored.incrBy(buildKey(key), value);
+        }
     }
 
     @Override
-    public long incr(String key, long delta, long initValue, long timeoutSeconds, int expiredSeconds) {
+    public long incr(String key, long value, int expiredSeconds) {
         String targetKey = buildKey(key);
-        long result = jedis.incrBy(targetKey, delta);
-        if(isValidExpiredTime(expiredSeconds)) {
-            jedis.expire(targetKey, expiredSeconds);
+        try (Jedis ignored = jedisPool.getResource()) {
+            long result = ignored.incrBy(targetKey, value);
+            if (isValidExpiredTime(expiredSeconds)) {
+                ignored.expire(targetKey, expiredSeconds);
+            }
+            return result;
         }
-        return result;
     }
 
     @Override
     public void expire(String key, int expiredSeconds) {
-        if(isValidExpiredTime(expiredSeconds)) {
+        if (!isValidExpiredTime(expiredSeconds)) {
+            return;
+        }
+        try (Jedis ignored = jedisPool.getResource()) {
             String targetKey = buildKey(key);
-            for(int i = 0; i < 3; ++i) {
-                Long result = jedis.expire(targetKey, expiredSeconds);
-                if(SUCC_CODE.equals(result)) {
+            for (int i = 0; i < 3; ++i) {
+                Long result = ignored.expire(targetKey, expiredSeconds);
+                if (SUC_CODE.equals(result)) {
                     return;
                 } else {
                     logger.warn("Set expire by key {} return error code {}", targetKey, result);
@@ -156,12 +180,14 @@ public class RedisCache extends AbstractCache {
 
     @Override
     public int ttl(String key) {
-        Long ttl = jedis.ttl(buildKey(key));
-        if(ttl == null || ttl == -2) {
-            return CACHE_NOT_EXISTS;
-        } else if(ttl == -1) {
-            return CACHE_NO_EXPRIE;
+        try (Jedis ignored = jedisPool.getResource()) {
+            long ttl = ignored.ttl(buildKey(key));
+            if (ttl == -2) {
+                return CACHE_NOT_EXISTS;
+            } else if (ttl == -1) {
+                return CACHE_NO_EXPIRE;
+            }
+            return (int) ttl;
         }
-        return ttl.intValue();
     }
 }

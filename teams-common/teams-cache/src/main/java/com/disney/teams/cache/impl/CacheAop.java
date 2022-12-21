@@ -31,8 +31,8 @@ public class CacheAop {
      * 根据类、方法及参数创建缓存key值的尾部
      */
     private String key(Cache cache, Object[] params) {
-        String prefix = cache.prefix();
-        if (StringUtils.isBlank(prefix)) {
+        String prefix = cache.key();
+        if (StringUtils.isBlank(key)) {
             return null;
         }
         String key = prefix + StringUtils.toString(params, '-');

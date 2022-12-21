@@ -13,7 +13,7 @@ import com.disney.teams.cache.ICache;
  */
 public class CacheUtils {
 
-    private static ICache cache;
+    protected static ICache cache;
 
     public void setCache(ICache cache) {
         CacheUtils.cache = cache;
@@ -81,23 +81,6 @@ public class CacheUtils {
 
     public static <T> T getIfOverTtl(String key, Integer ttl, Class<T> clz) {
         return cache.getIfOverTtl(key, ttl, clz);
-    }
-
-    /**
-     * 从缓存中取值<br />
-     * 当存入的数据类型为java.math.BigInteger, BigDecimal, AtomicInteger等Numberic数值类型时，
-     * 请使用{@link #get(String, int, Class)}
-     *
-     * @param key
-     * @param timeoutSeconds
-     * @return
-     */
-    public static <T> T get(String key, int timeoutSeconds) {
-        return cache.get(key, timeoutSeconds);
-    }
-
-    public static <T> T get(String key, int timeoutSeconds, Class<T> clz) {
-        return cache.get(key, timeoutSeconds, clz);
     }
 
     /**
@@ -171,14 +154,6 @@ public class CacheUtils {
         return cache.incr(key, value);
     }
 
-    public static long incr(String key, long value, int expiredSeconds) {
-        return cache.incr(key, value, expiredSeconds);
-    }
-
-    public static long incr(String key, long delta, long initValue, long timeoutSeconds, int expiredSeconds) {
-        return cache.incr(key, delta, initValue, timeoutSeconds, expiredSeconds);
-    }
-
     /**
      * 缓存计数减
      *
@@ -188,10 +163,6 @@ public class CacheUtils {
      */
     public static long decr(String key, long value) {
         return cache.decr(key, value);
-    }
-
-    public static long decr(String key, long delta, long initValue, long timeoutSeconds, int expiredSeconds) {
-        return cache.decr(key, delta, initValue, timeoutSeconds, expiredSeconds);
     }
 
     /**

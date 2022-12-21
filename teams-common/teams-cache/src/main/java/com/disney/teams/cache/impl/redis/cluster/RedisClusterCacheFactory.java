@@ -2,14 +2,13 @@ package com.disney.teams.cache.impl.redis.cluster;
 
 import com.disney.teams.cache.ICache;
 import com.disney.teams.cache.impl.redis.AbstractRedisCacheFactory;
-import com.disney.teams.cache.impl.redis.utils.RedisCacheUtils;
+import com.disney.teams.cache.utils.RedisCacheUtils;
 import com.disney.teams.cache.serializer.FastJsonSerializer;
 import com.disney.teams.utils.type.StringUtils;
 import redis.clients.jedis.ConnectionPoolConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -27,22 +26,6 @@ public class RedisClusterCacheFactory extends AbstractRedisCacheFactory {
     private int maxRedirections;
 
     private ClusterRedisCache cache;
-
-    /**
-     * 构建集群HostAndPort配置
-     */
-    private Set<HostAndPort> buildHostAndPorts(String hosts) {
-        Set<HostAndPort> jedisShardInfoList = new HashSet<HostAndPort>();
-        String[] hostArrays = hosts.split(",");
-        for (String hostStr : hostArrays) {
-            String[] ipAndPort = hostStr.split(":");
-            String ip = ipAndPort[0];
-            int port = Integer.parseInt(ipAndPort[1]);
-            HostAndPort jedisShardInfo = new HostAndPort(ip, port);
-            jedisShardInfoList.add(jedisShardInfo);
-        }
-        return jedisShardInfoList;
-    }
 
     @Override
     public ICache getObject() throws Exception {

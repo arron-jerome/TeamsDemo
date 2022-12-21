@@ -1,24 +1,19 @@
-/*
- * Copyright 2016-2020 1HAITAO.COM. All rights reserved.
- */
 package com.disney.teams.cache.impl.local;
 
-import com.yhtframework.cache.ICache;
+import com.disney.teams.cache.ICache;
 import com.disney.teams.cache.factory.AbstractCacheFactory;
 
 import javax.annotation.PreDestroy;
 
 /**
- * //TODO
- *
- * @author lucky.liu
+ * @author arron.zhou
  * @version 1.0.0
- * @email liuwb2010@gmail.com
- * @date 2016-03-08
+ * @date 2022/12/21
+ * Description:
  * Modification  History:
  * Date         Author        Version        Description
  * ------------------------------------------------------
- * 2016-03-08   lucky.liu     1.0.0          create
+ * 2022/12/21       arron.zhou      1.0.0          create
  */
 public class LocalCacheFactory extends AbstractCacheFactory {
 
@@ -30,12 +25,12 @@ public class LocalCacheFactory extends AbstractCacheFactory {
 
     private LocalCache cache;
 
-    public LocalCacheFactory(){
+    public LocalCacheFactory() {
 
     }
 
     public LocalCacheFactory(boolean isPersist) {
-        if(isPersist) {
+        if (isPersist) {
             this.clearIntervalSeconds = 30;
             this.persistPath = "../data/local.cache";
         }
@@ -43,22 +38,22 @@ public class LocalCacheFactory extends AbstractCacheFactory {
 
     @Override
     public ICache getObject() throws Exception {
-        if(cache != null) {
+        if (cache != null) {
             return cache;
         }
         synchronized (this) {
-            if(cache != null) {
+            if (cache != null) {
                 return cache;
             }
             cache = new LocalCache(clearIntervalSeconds, persistPath);
-            cache.setDefalutExpiredTime(defaultExpiredTime);
+            cache.setDefaultExpiredTime(defaultExpiredTime);
             return cache;
         }
     }
 
     @PreDestroy
     public void destroy() {
-        if(cache != null) {
+        if (cache != null) {
             cache.destroy();
         }
     }

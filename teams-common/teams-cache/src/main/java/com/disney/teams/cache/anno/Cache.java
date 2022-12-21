@@ -21,12 +21,14 @@ public @interface Cache {
 
     /**
      * 缓存key值前缀
+     *
      * @return
      */
-    String prefix();
+    String key();
 
     /**
      * 单位秒
+     *
      * @return
      */
     int timeout() default 300;

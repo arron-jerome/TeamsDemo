@@ -25,6 +25,7 @@
         <jedis.version>4.3.1</jedis.version>
         <slf4j.version>1.7.33</slf4j.version>
         <fastjson.version>1.2.60</fastjson.version>
+        <aspect.version>1.9.7</aspect.version>
     </properties>
 
     <dependencyManagement>
@@ -70,6 +71,11 @@
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspect.version}</version>
             </dependency>
 
 

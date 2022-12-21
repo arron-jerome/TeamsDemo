@@ -1,14 +1,16 @@
 package com.disney.teams.cache.impl.redis;
 
+import com.disney.teams.cache.CacheRuntimeException;
 import com.disney.teams.cache.ICache;
+import com.disney.teams.cache.utils.RedisCacheUtils;
 import com.disney.teams.cache.serializer.FastJsonSerializer;
+import com.disney.teams.utils.type.CollectionUtils;
+import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
 import redis.clients.jedis.Protocol;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author arron.zhou
@@ -24,40 +26,27 @@ public class RedisCacheFactory extends AbstractRedisCacheFactory {
 
     private RedisCache cache;
 
-    private String password;
-
-    private List<JedisShardInfo> build(String hosts) {
-        List<JedisShardInfo> jedisShardInfoList = new ArrayList<JedisShardInfo>();
-        String[] hostArrays = hosts.split(",");
-        for (String hostStr : hostArrays) {
-            String[] ipAndPort = hostStr.split(":");
-            String ip = ipAndPort[0];
-            int port = Integer.parseInt(ipAndPort[1]);
-            JedisShardInfo jedisShardInfo = new JedisShardInfo(ip, port);
-            jedisShardInfoList.add(jedisShardInfo);
-        }
-        return jedisShardInfoList;
-    }
-
     @Override
     public ICache getObject() throws Exception {
         if (cache != null) {
             return cache;
         }
-
         synchronized (this) {
             if (cache != null) {
                 return cache;
             }
-            List<JedisShardInfo> infoList = JedisShardInfoFactory.build(servers);
-            JedisShardInfo info = infoList.get(0);
-            info.setPassword(password);
+            Set<HostAndPort> hostAndPort = buildHostAndPorts(servers);
+            if (CollectionUtils.isEmpty(hostAndPort)) {
+                throw new CacheRuntimeException("servers is empty or with wrong format,use 127.0.0.1:6379");
+            }
+            HostAndPort next = hostAndPort.iterator().next();
             JedisPoolConfig config = buildPoolConfig();
-            JedisPool jedisPool = new JedisPool(config, info.getHost(), info.getPort(), Protocol.DEFAULT_TIMEOUT, info.getPassword());
-            cache = new RedisCache();
+            JedisPool jedisPool = new JedisPool(config
+                    , next.getHost(), next.getPort()
+                    , Protocol.DEFAULT_TIMEOUT, getPassword());
+            cache = new RedisCache(jedisPool);
             cache.setValueSerializer(new FastJsonSerializer());
             cache.setPrefixKey(serverId);
-            cache.setJedis(new RedisClient(jedisPool));
             if (defaultRedis) {
                 RedisCacheUtils.cache(cache);
             }

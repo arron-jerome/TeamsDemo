@@ -5,10 +5,13 @@ package com.disney.teams.cache.impl.redis;
 
 import com.disney.teams.cache.factory.AbstractCacheFactory;
 import redis.clients.jedis.ConnectionPoolConfig;
+import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisClientConfig;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author arron.zhou
@@ -57,6 +60,21 @@ public abstract class AbstractRedisCacheFactory extends AbstractCacheFactory {
         return config;
     }
 
+    /**
+     * 构建集群HostAndPort配置
+     */
+    protected Set<HostAndPort> buildHostAndPorts(String hosts) {
+        Set<HostAndPort> jedisShardInfoList = new HashSet<HostAndPort>();
+        String[] hostArrays = hosts.split(",");
+        for (String hostStr : hostArrays) {
+            String[] ipAndPort = hostStr.split(":");
+            String ip = ipAndPort[0];
+            int port = Integer.parseInt(ipAndPort[1]);
+            HostAndPort jedisShardInfo = new HostAndPort(ip, port);
+            jedisShardInfoList.add(jedisShardInfo);
+        }
+        return jedisShardInfoList;
+    }
     public String getServers() {
         return servers;
     }

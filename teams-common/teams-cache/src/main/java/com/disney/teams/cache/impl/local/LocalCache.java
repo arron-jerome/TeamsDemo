@@ -1,16 +1,10 @@
-/*
- * Copyright 2016-2020 1HAITAO.COM. All rights reserved.
- */
 package com.disney.teams.cache.impl.local;
 
-import com.yhtframework.cache.bean.LocalCacheData;
+import com.disney.teams.cache.bean.LocalCacheData;
 import com.disney.teams.cache.impl.AbstractCache;
-import com.yhtframework.utils.io.FileUtils;
-import com.yhtframework.utils.io.SerialUtils;
-import com.yhtframework.utils.type.ClassUtils;
+import com.disney.teams.utils.type.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,16 +13,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * //TODO
- *
- * @author lucky.liu
+ * @author arron.zhou
  * @version 1.0.0
- * @email liuwb2010@gmail.com
- * @date 2016-01-26
+ * @date 2022/12/21
+ * Description:
  * Modification  History:
  * Date         Author        Version        Description
  * ------------------------------------------------------
- * 2016-01-26   lucky.liu     1.0.0          create
+ * 2022/12/21       arron.zhou      1.0.0          create
  */
 public class LocalCache extends AbstractCache implements DisposableBean {
 
@@ -170,17 +162,6 @@ public class LocalCache extends AbstractCache implements DisposableBean {
         }
     }
 
-    //本地缓存无需超时时间
-    @Override
-    public <T> T get(String key, int timeoutSeconds) {
-        return this.get(key);
-    }
-
-    @Override
-    public <T> T get(String key, int timeoutSeconds, Class<T> clz) {
-        return get(key, clz);
-    }
-
     @Override
     public <T> boolean add(String key, T value) {
         return this.add(key, value, 0);
@@ -234,21 +215,6 @@ public class LocalCache extends AbstractCache implements DisposableBean {
     }
 
     @Override
-    public long incr(String key, long delta, long initValue, long timeoutSeconds, int expiredSeconds) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long decr(String key, long value) {
-        return incr(key, -value);
-    }
-
-    @Override
-    public long decr(String key, long delta, long initValue, long timeoutSeconds, int expiredSeconds) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void expire(String key, int expiredSeconds) {
         LocalCacheData cd = cacheMap.get(key);
         if(cd == null){
@@ -264,7 +230,7 @@ public class LocalCache extends AbstractCache implements DisposableBean {
             return CACHE_NOT_EXISTS;
         }
         if(cd .getExpiredTime() < 1) {
-            return CACHE_NO_EXPRIE;
+            return CACHE_NO_EXPIRE;
         }
         long ttl = (cd.getExpiredTime() - System.currentTimeMillis()) / 1000;
         return ttl < 0 ? 0 : (int) ttl;

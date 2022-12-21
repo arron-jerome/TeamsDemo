@@ -2,16 +2,9 @@ package com.disney.teams.cache.impl.redis;
 
 import com.disney.teams.cache.CacheRuntimeException;
 import com.disney.teams.cache.impl.AbstractCache;
-import com.disney.teams.cache.impl.redis.utils.RedisCacheUtils;
-import com.disney.teams.cache.impl.redis.utils.RedisRunnable;
-import com.disney.teams.utils.type.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.Transaction;
 import redis.clients.jedis.params.SetParams;
-
-import java.util.List;
 
 /**
  * @author arron.zhou
@@ -49,8 +42,7 @@ public class RedisCache extends AbstractCache {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T get(String key, int timeoutSeconds) {
+    public <T> T get(String key) {
         try (Jedis ignored = jedisPool.getResource()) {
             String s = ignored.get(buildKey(key));
             return valueSerializer.unSerialize(s);
@@ -58,7 +50,7 @@ public class RedisCache extends AbstractCache {
     }
 
     @Override
-    public <T> T get(String key, int timeoutSeconds, Class<T> clz) {
+    public <T> T get(String key, Class<T> clz) {
         try (Jedis ignored = jedisPool.getResource()) {
             String s = ignored.get(buildKey(key));
             return valueSerializer.unSerialize(s, clz);
@@ -67,6 +59,9 @@ public class RedisCache extends AbstractCache {
 
     @Override
     public <T> boolean add(String key, T value, int expiredSeconds) {
+        if (expiredSeconds == 0) {
+            throw new CacheRuntimeException("invalid expiredSeconds,must -1 or large than 0");
+        }
         try (Jedis ignored = jedisPool.getResource()) {
             if (isValidExpiredTime(expiredSeconds)) {
                 SetParams setParams = SetParams.setParams().ex(expiredSeconds)
@@ -74,8 +69,6 @@ public class RedisCache extends AbstractCache {
                 String rs = ignored.set(buildKey(key)
                         , valueSerializer.serialize(value), setParams);
                 return SUC_CODE_STR.equals(rs);
-            } else if (expiredSeconds == 0) {
-                return !ignored.exists(buildKey(key));
             } else {
                 Long rs = ignored.setnx(buildKey(key), valueSerializer.serialize(value));
                 return SUC_CODE.equals(rs);
@@ -85,49 +78,18 @@ public class RedisCache extends AbstractCache {
 
     @Override
     public <T> boolean put(final String key, final T value, final int expiredSeconds) {
-        if (isValidExpiredTime(expiredSeconds)) {
-            return RedisCacheUtils.execute(key, new RedisRunnable<Boolean>() {
-                @Override
-                public Boolean execute(Jedis jedis) {
-                    final String fullKey = buildKey(key);
-                    final int retryCount = RedisCacheUtils.TRANSACTION_MAX_RETRY_COUNT + 1;
-                    //发现数据已经被修改，重试最多TRANSACTION_MAX_RETRY_COUNT次，直到成功为止
-
-                    String valueStr = valueSerializer.serialize(value);
-                    for (int i = 1; i < retryCount; ++i) {
-                        jedis.watch(fullKey);
-                        try {
-                            //事务开始
-                            Transaction tx = jedis.multi();
-                            Response<String> setRes = tx.set(fullKey, valueStr);
-
-                            Response<Long> expireRes = tx.expire(fullKey, expiredSeconds);
-
-                            //执行队列中的任务并提交
-                            //TODO 如果失败，仍可能有数据被提交，待优化
-                            List<Object> list = tx.exec();
-                            if (CollectionUtils.isEmpty(list)) {
-                                continue;
-                            }
-
-                            if (SUC_CODE_STR.equals(setRes.get()) && SUC_CODE.equals(expireRes.get())) {
-                                return Boolean.TRUE;
-                            } else {
-                                jedis.unwatch();
-                                return Boolean.FALSE;
-                            }
-                        } catch (RuntimeException e) {
-                            jedis.unwatch();
-                            throw e;
-                        }
-                    }
-                    throw new CacheRuntimeException(String.format("Execute key '%s' transaction, rollback %s count!", fullKey, retryCount));
-                }
-            });
-        } else if (expiredSeconds == 0) {
-            return !jedis.exists(buildKey(key));
-        } else {
-            String rs = jedis.set(buildKey(key), valueSerializer.serialize(value));
+        if (expiredSeconds == 0) {
+            throw new CacheRuntimeException("invalid expiredSeconds,must -1 or large than 0");
+        }
+        try (Jedis ignored = jedisPool.getResource()) {
+            SetParams setParams;
+            if (isValidExpiredTime(expiredSeconds)) {
+                setParams = SetParams.setParams().exAt(expiredSeconds);
+            } else {
+                setParams = SetParams.setParams();
+            }
+            String valueStr = valueSerializer.serialize(value);
+            String rs = ignored.set(buildKey(key), valueStr, setParams);
             return SUC_CODE_STR.equals(rs);
         }
     }
@@ -148,21 +110,9 @@ public class RedisCache extends AbstractCache {
     }
 
     @Override
-    public long incr(String key, long value, int expiredSeconds) {
-        String targetKey = buildKey(key);
-        try (Jedis ignored = jedisPool.getResource()) {
-            long result = ignored.incrBy(targetKey, value);
-            if (isValidExpiredTime(expiredSeconds)) {
-                ignored.expire(targetKey, expiredSeconds);
-            }
-            return result;
-        }
-    }
-
-    @Override
     public void expire(String key, int expiredSeconds) {
-        if (!isValidExpiredTime(expiredSeconds)) {
-            return;
+        if (isValidExpiredTime(expiredSeconds)) {
+            throw new CacheRuntimeException("invalid expiredSeconds,must large than 0");
         }
         try (Jedis ignored = jedisPool.getResource()) {
             String targetKey = buildKey(key);

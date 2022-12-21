@@ -27,7 +27,7 @@ public abstract class AbstractCache implements ICache {
     /**
      * Timed out waiting for operation, ms
      */
-    protected int defaultTimeout = CacheTimes.ONEMIN;
+    protected int defaultOpTimeout = 100;
 
     protected int defaultExpiredTime = CacheTimes.ONEDAY;
 
@@ -54,13 +54,13 @@ public abstract class AbstractCache implements ICache {
     @Override
     public void setDefaultTimeOut(int timeout) {
         if (timeout >= 0) {
-            defaultTimeout = timeout;
+            defaultOpTimeout = timeout;
         }
     }
 
     @Override
     public int getDefaultTimeOut() {
-        return defaultTimeout;
+        return defaultOpTimeout;
     }
 
     public String getPrefixKey() {
@@ -71,23 +71,8 @@ public abstract class AbstractCache implements ICache {
         this.prefixKey = prefixKey;
     }
 
-    @Override
-    public boolean exists(String key) {
-        Object val = get(key);
-        return val != null;
-    }
-
-    @Override
-    public <T> T get(String key) {
-        return get(key, defaultTimeout);
-    }
-
     /**
      * 判断对应key值的ttl是否大于指定的ttl
-     *
-     * @param key
-     * @param ttl
-     * @return
      */
     private boolean isOverTtl(String key, Integer ttl) {
         //小于0或null时默认大于
@@ -112,11 +97,6 @@ public abstract class AbstractCache implements ICache {
     @Override
     public <T> T getIfOverTtl(String key, Integer ttl, Class<T> clz) {
         return isOverTtl(key, ttl) ? get(key, clz) : null;
-    }
-
-    @Override
-    public <T> T get(String key, Class<T> clz) {
-        return get(key, defaultTimeout, clz);
     }
 
     @Override
@@ -178,23 +158,8 @@ public abstract class AbstractCache implements ICache {
     }
 
     @Override
-    public long incr(String key, long value) {
-        return incr(key, value, defaultExpiredTime);
-    }
-
-    @Override
-    public long incr(String key, long value, int expiredSeconds) {
-        return incr(key, value, 0, defaultTimeout, expiredSeconds);
-    }
-
-    @Override
     public long decr(String key, long value) {
         return incr(key, -value);
-    }
-
-    @Override
-    public long decr(String key, long delta, long initValue, long timeoutSeconds, int expiredSeconds) {
-        return incr(key, -delta, initValue, timeoutSeconds, expiredSeconds);
     }
 
     protected String buildKey(String key) {
@@ -209,19 +174,4 @@ public abstract class AbstractCache implements ICache {
     public boolean isValidExpiredTime(long expiredTime) {
         return expiredTime > 0;
     }
-
-    @Override
-    public boolean runIfNotExists(String key, int expiredSeconds, Runnable run) {
-        boolean added = add(key, "1", expiredSeconds);
-        if (!added) {
-            return false;
-        }
-        try {
-            run.run();
-            return true;
-        } finally {
-            delete(key);
-        }
-    }
-
 }

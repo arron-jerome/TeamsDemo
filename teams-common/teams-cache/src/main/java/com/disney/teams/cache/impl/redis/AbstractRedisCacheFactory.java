@@ -1,6 +1,3 @@
-/*
- * Copyright 2016-2020 1HAITAO.COM. All rights reserved.
- */
 package com.disney.teams.cache.impl.redis;
 
 import com.disney.teams.cache.factory.AbstractCacheFactory;
